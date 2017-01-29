@@ -5,7 +5,7 @@ import time
 import os
 from threading import Thread
 
-corpus_dir = '/Users/ryanw_smith/PycharmProjects/mlb_solution/corpus'
+corpus_dir = '/Users/ryanw_smith/Code/personal/mlb-challenge/corpus'
 
 class Server(object):
     url = 'https://mlb.praetorian.com'
