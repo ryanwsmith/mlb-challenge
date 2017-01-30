@@ -3,11 +3,21 @@ import base64
 import math
 from sklearn import tree
 
-from sklearn.datasets import make_multilabel_classification
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.svm import SVC
-from sklearn.feature_extraction import DictVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+CORPUS_PATH = '/Users/ryanw_smith/Code/personal/mlb-challenge/corpus'
+
+POSSIBLE_TARGET_VALUES = {1: 'm68k',
+                          2: 's390',
+                          3: 'sh4',
+                          4: 'powerpc',
+                          5: 'alphaev56',
+                          6: 'mipsel',
+                          7: 'xtensa',
+                          8: 'mips',
+                          9: 'sparc',
+                          10: 'avr',
+                          11: 'arm',
+                          12: 'x86_64'}
+
 
 class FeatureExtractor(object):
     def __init__(self, bin_b64, targets):
@@ -154,25 +164,11 @@ def solve():
     best_streak = 0
     current_streak = 0
 
-    corpus_path = '/Users/ryanw_smith/Code/personal/mlb-challenge/corpus'
-    sc = SampleCorpus(corpus_path)
+    sc = SampleCorpus(CORPUS_PATH)
 
-    target_values = {1: 'm68k',
-                     2: 's390',
-                     3: 'sh4',
-                     4: 'powerpc',
-                     5: 'alphaev56',
-                     6: 'mipsel',
-                     7: 'xtensa',
-                     8: 'mips',
-                     9: 'sparc',
-                     10: 'avr',
-                     11: 'arm',
-                     12: 'x86_64'}
+    target_values_by_name = dict((v, k) for k, v in POSSIBLE_TARGET_VALUES.iteritems())
 
-    target_values_by_name = dict((v, k) for k, v in target_values.iteritems())
-
-    corpus_file_path = os.path.join(corpus_path, 'all.txt')
+    corpus_file_path = os.path.join(CORPUS_PATH, 'all_clean.txt')
     sc._get_samples_from_file(corpus_file_path)
     sc._split_sample_set()
 
@@ -186,10 +182,11 @@ def solve():
         training_vectors.append(fe.feature_vector)
         training_targets.append(target_values_by_name[target_label])
 
-    clf = tree.DecisionTreeClassifier()
+    clf = tree.DecisionTreeClassifier(min_samples_leaf=10)
     clf = clf.fit(training_vectors, training_targets)
-    # tree.export_graphviz(clf, out_file='tree.dot')
+    tree.export_graphviz(clf, out_file='tree.dot')
 
+    print clf.tree_
 
     for validation_sample in sc.validation_set:
         attempts += 1
@@ -203,15 +200,15 @@ def solve():
 
         # print target_guess
         # print clf.predict_proba([fe.feature_vector,])
-        # print "GUESS: {}, ACTUAL: {}".format(target_values[target_guess],target_label)
+        # print "GUESS: {}, ACTUAL: {}".format(POSSIBLE_TARGET_VALUES[target_guess],target_label)
 
-        if target_values[target_guess] == target_label:
+        if POSSIBLE_TARGET_VALUES[target_guess] == target_label:
             # print "SUCCESS!"
             wins += 1
             current_streak += 1
         else:
             print "FAIL!"
-            print "GUESS: {}, ACTUAL: {}".format(target_values[target_guess], target_label)
+            print "GUESS: {}, ACTUAL: {}".format(POSSIBLE_TARGET_VALUES[target_guess], target_label)
             print clf.predict_proba([fe.feature_vector, ])
             print clf.predict_log_proba([fe.feature_vector, ])
             print clf.decision_path([fe.feature_vector, ])
