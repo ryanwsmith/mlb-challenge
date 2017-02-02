@@ -40,3 +40,5 @@ Most of the work was spent collecting samples, selecting features, extracting fe
 6. Create an endpoint for the model you've trained in AWS
 7. Run aws_mlb_solver.py with the ID of the model you've trained in AWS
 8. The hash _should_ drop out into a file "mlb_hash.txt" after a bit once it hits a 500 win streak (maybe a few hours)
+
+**PRO TIP:** If you run this script in AWS us-east-1 you'll get there a lot faster :) (latency to the AWS ML Model endpoint is the bottleneck)
