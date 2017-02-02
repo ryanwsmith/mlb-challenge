@@ -15,18 +15,19 @@ Either way, it was a great opportunity to test the new AWS machine learning serv
 Most of the work was spent collecting samples, selecting features, extracting features, then training and testing the model.
 
 ## Feature Vector Description
+
 * features 0-255
-** This is a histogram of the occurance of byte values 0-255 in the binary sample.
-** The hypothesis is that opcodes are common byte values, so a higher occurance of certain values may correlate to a particular ISA
-*feature 256
-** This is the number of trailing zeros at the end of the sample
-** The hypothesis is since all samples are 64 bytes, trailing zeros could indicate padding for variable-length ISAs (if zero-padding is required/used)
+ * This is a histogram of the occurance of byte values 0-255 in the binary sample.
+ * The hypothesis is that opcodes are common byte values, so a higher occurance of certain values may correlate to a particular ISA
+* feature 256
+ * This is the number of trailing zeros at the end of the sample
+ * The hypothesis is since all samples are 64 bytes, trailing zeros could indicate padding for variable-length ISAs (if zero-padding is required/used)
 * feature 257
-** This is the length of the longest number of consecutive zeros in the sample
-** The hypothes is that zero runs may indicate word size for multibyte zero constants
+ * This is the length of the longest number of consecutive zeros in the sample
+ * The hypothes is that zero runs may indicate word size for multibyte zero constants
 * feature features 258-267
-** These are counts of common multibyte constants in both little endian and big endian representation
-** The hypothesis is that this could identify the endian-ness of the ISA
+ * These are counts of common multibyte constants in both little endian and big endian representation
+ * The hypothesis is that this could identify the endian-ness of the ISA
 
 
 ## Solution Steps
